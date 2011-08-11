@@ -11,7 +11,7 @@ while (args.length) {
   if (arg === '-d') daemonized = true;
   else if (0 <= (i = arg.indexOf(':'))) {
     sock = net.createConnection(arg.slice(arg.slice(i+1, arg.length)),
-                                i && arg.slice(arg.slice(0, i)));
+                                i && arg.slice(0, i));
     sock.on('connected', function () { console.log('connected!', arguments); });
   } else {
     console.log('watching', log = arg);

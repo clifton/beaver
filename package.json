@@ -1,5 +1,5 @@
 {
-  "name": "forever",
+  "name": "beaver",
   "preferGlobal": "true",
   "description": "CLI tool for piping logs anywhere via TCP",
   "version": "0.0.1",
