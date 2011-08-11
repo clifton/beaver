@@ -1,35 +1,18 @@
 #!/usr/bin/env node
 
 var net = require('net')
-  , child_process = require('child_process')
-  , forever = require('forever')
+  , fs = require('fs')
   , args = process.argv.slice(2)
-  , log, sock, tail, daemonized;
+  , log, sock, daemonized;
 
 while (args.length) {
-  var arg = args.shift(), i;
-  if (arg === '-d') daemonized = true;
-  else if (0 <= (i = arg.indexOf(':'))) {
-    sock = net.createConnection(arg.slice(arg.slice(i+1, arg.length)),
-                                i && arg.slice(0, i));
-    sock.on('connected', function () { console.log('connected!', arguments); });
-  } else {
-    console.log('watching', log = arg);
-  }
+  var arg = args.shift()
+    , host = arg.split(':');
+  if (host && host[1]) sock = net.createConnection(host[1], host[0]);
+  else log = arg
 }
 
-try {
-  tail = child_process.spawn('tail', ['-n', '0', '-f', log]);
-} catch (e) {
-  console.log('error starting tail', e);
-  process.exit(-1);
-}
-
-tail.on('exit', function () {
-  console.log('tail quit unexpectedly');
-  process.exit(-1);
+fs.watchFile(log, function (curr, prev) {
+  if (curr.size <= prev.size) return;
+  fs.createReadStream(log, {start: prev.size}).pipe(sock || process.stdout);
 });
-
-// if a server isnt passed, pipe to stdout
-if (!sock) sock = process.stdout;
-tail.stdout.pipe(sock);

@@ -2,7 +2,7 @@
   "name": "beaver",
   "preferGlobal": "true",
   "description": "CLI tool for piping logs anywhere via TCP",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "author": "Clifton King <cliftonk@gmail.com>",
   "repository": {
     "type": "git",
