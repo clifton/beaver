@@ -3,16 +3,27 @@
 var net = require('net')
   , fs = require('fs')
   , args = process.argv.slice(2)
-  , log, sock, daemonized;
+  , log, sock, ender;
 
 while (args.length) {
   var arg = args.shift()
     , host = arg.split(':');
-  if (host && host[1]) sock = net.createConnection(host[1], host[0]);
-  else log = arg
+  if (host[1])
+    sock = net.createConnection(host[1], host[0]);
+  else
+    log = arg;
 }
+
+// write to stdout if a host isnt passed
+if (!sock) sock = process.stdout;
 
 fs.watchFile(log, function (curr, prev) {
   if (curr.size <= prev.size) return;
-  fs.createReadStream(log, {start: prev.size}).pipe(sock || process.stdout);
+  fs.createReadStream(log, {start: prev.size})
+    .pipe(sock, {end: false});
+  
+  // ruby is so slow at writing to stdout that some lines were broken up
+  clearTimeout(ender);
+  ender = setTimeout(sock.end, 100);
 });
+
