@@ -1,8 +1,8 @@
 {
   "name": "beaver",
   "preferGlobal": "true",
-  "description": "CLI tool for piping logs anywhere via TCP",
-  "version": "0.0.3",
+  "description": "CLI tool for piping a log's tail over TCP",
+  "version": "0.0.4",
   "author": "Clifton King <cliftonk@gmail.com>",
   "repository": {
     "type": "git",
@@ -12,15 +12,13 @@
     "cli",
     "loggly",
     "sysadmin",
-    "tools"
+    "tools",
+    "logging",
+    "tcp"
   ],
-  "dependencies": {
-    "forever": "~> 0.6.3"
-  },
   "bin": {
     "beaver": "./bin/beaver"
   },
-  "main": "./lib/beaver",
   "engines": {
     "node": ">= 0.4.0"
   }
