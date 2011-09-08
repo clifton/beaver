@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 var net = require('net')
   , fs = require('fs')
   , args = process.argv.slice(2)
@@ -17,13 +16,9 @@ while (args.length) {
 // write to stdout if a host isnt passed
 if (!sock) sock = process.stdout;
 
-fs.watchFile(log, function (curr, prev) {
+fs.watchFile(log, { interval: 1000 }, function (curr, prev) {
   if (curr.size <= prev.size) return;
+  if (curr.size - prev.size > 1 * 1024 * 1024) return;
   fs.createReadStream(log, {start: prev.size})
-    .pipe(sock, {end: false});
-  
-  // ruby is so slow at writing to stdout that some lines were broken up
-  clearTimeout(ender);
-  ender = setTimeout(sock.end, 100);
+    .pipe(sock);
 });
-
