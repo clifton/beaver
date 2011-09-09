@@ -2,23 +2,22 @@
 var net = require('net')
   , fs = require('fs')
   , args = process.argv.slice(2)
-  , log, sock, ender;
+  , log, port, host;
 
 while (args.length) {
   var arg = args.shift()
-    , host = arg.split(':');
-  if (host[1])
-    sock = net.createConnection(host[1], host[0]);
-  else
+    , _host = arg.split(':');
+  if (_host[1]) {
+    port = _host[1];
+    host = _host[0];
+  } else {
     log = arg;
+  }
 }
-
-// write to stdout if a host isnt passed
-if (!sock) sock = process.stdout;
 
 fs.watchFile(log, { interval: 1000 }, function (curr, prev) {
   if (curr.size <= prev.size) return;
   if (curr.size - prev.size > 1 * 1024 * 1024) return;
   fs.createReadStream(log, {start: prev.size})
-    .pipe(sock);
+    .pipe( host ? net.createConnection(port, host) : process.stdout );
 });
