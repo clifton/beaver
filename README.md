@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/clifton/beaver.png)](http://travis-ci.org/clifton/beaver)
 # Beaver - log tailing over tcp
 
 ## What does beaver do?
